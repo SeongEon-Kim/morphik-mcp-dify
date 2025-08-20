@@ -5,14 +5,17 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
-
-# Copy source code
+# Copy source code first (needed for build)
 COPY . .
+
+# Install ALL dependencies (dev dependencies needed for build)
+RUN npm install
 
 # Build the project
 RUN npm run build:streamable
+
+# Remove dev dependencies after build
+RUN npm prune --omit=dev
 
 # Expose port (Railway uses PORT env var)
 EXPOSE 8976
