@@ -1,5 +1,8 @@
 FROM node:18-alpine
 
+# Install TypeScript globally
+RUN npm install -g typescript
+
 WORKDIR /app
 
 # Copy package files
@@ -8,10 +11,14 @@ COPY package*.json ./
 # Copy source code
 COPY . .
 
-# Install dependencies and build in one step
-RUN npm install && \
-    npm run build:streamable && \
-    npm ci --omit=dev
+# Install all dependencies (including dev for build)
+RUN npm install
+
+# Build the project with global tsc
+RUN npm run build:streamable
+
+# Clean install production dependencies only
+RUN rm -rf node_modules && npm ci --omit=dev
 
 # Expose port (Railway uses PORT env var)
 EXPOSE 8976
