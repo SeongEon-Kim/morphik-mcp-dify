@@ -5,17 +5,17 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Copy source code first (needed for build)
-COPY . .
-
-# Install ALL dependencies (dev dependencies needed for build)
+# Install ALL dependencies first (including dev deps for build)
 RUN npm install
 
-# Build the project
+# Copy source code
+COPY . .
+
+# Build the project  
 RUN npm run build:streamable
 
-# Remove dev dependencies after build
-RUN npm prune --omit=dev
+# Clean up - remove node_modules and reinstall only production deps
+RUN rm -rf node_modules && npm ci --omit=dev
 
 # Expose port (Railway uses PORT env var)
 EXPOSE 8976
