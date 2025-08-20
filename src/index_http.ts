@@ -7,7 +7,7 @@ import { parseConfig } from "./core/config.js";
 import { createMcpServer } from "./core/server.js";
 
 // HTTP server configuration
-const PORT = process.env.PORT || 8976;
+const PORT = parseInt(process.env.PORT || '8976', 10);
 
 async function main() {
   // Parse configuration from command line arguments
@@ -71,13 +71,14 @@ async function main() {
   
   // Start the HTTP server and return a promise to keep main() alive
   return new Promise<void>((resolve, reject) => {
-    const httpServer = app.listen(PORT, () => {
-      console.error(`Morphik MCP Server running on HTTP port ${PORT}`);
-      console.error(`File operations enabled: ${config.allowedDirectories.length} allowed ${config.allowedDirectories.length === 1 ? 'directory' : 'directories'}`);
-      console.error(`Use --allowed-dir=dir1,dir2,... to specify allowed directories for file operations`);
-      console.error(`Endpoints:`);
-      console.error(`  - GET  /health - Health check`);
-      console.error(`  - POST /mcp    - MCP requests (stateless mode)`);
+    const httpServer = app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Morphik MCP Server running on HTTP port ${PORT}`);
+      console.log(`📁 File operations enabled: ${config.allowedDirectories.length} allowed ${config.allowedDirectories.length === 1 ? 'directory' : 'directories'}`);
+      console.log(`💡 Use --allowed-dir=dir1,dir2,... to specify allowed directories for file operations`);
+      console.log(`🔗 Endpoints:`);
+      console.log(`  - GET  /health - Health check`);
+      console.log(`  - POST /mcp    - MCP requests (stateless mode)`);
+      console.log(`✅ Server ready to accept connections`);
     });
 
     httpServer.on('error', (error) => {

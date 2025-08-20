@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: morphik-mcp
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build:streamable
+    startCommand: node build/index_http.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /health
